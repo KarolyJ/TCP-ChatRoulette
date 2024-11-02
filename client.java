@@ -34,10 +34,11 @@ public class client {
       while(true) {
         //handle input from client console
         inputString = scan.nextLine();
-        if(inputString.equals("exit")) {
-          System.out.println("Goodbye!");
-          break;
-      }
+        //"TESTING": commented out so exit is handled on the server side, could be that here is better
+//        if(inputString.equals("exit")) {
+//          System.out.println("Goodbye!");
+//          break;
+//      }
       out.println(inputString);
     }
   } catch (IOException e) {

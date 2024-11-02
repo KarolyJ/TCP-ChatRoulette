@@ -18,6 +18,7 @@ public class server {
             System.out.println("New client has connected " + clientSocket);
             ClientHandler clientHandler = new ClientHandler(clientSocket);
             clients.add(clientHandler);
+            //start thread that handles the client
                Thread handlerThread = new Thread(clientHandler);
                handlerThread.start();
             }
@@ -65,21 +66,29 @@ public class server {
         @Override
         public void run() {
             try {
+                //get the pair for this client
                 this.pair = getPairSecond();
-                out.println(this.getPair());
                 out.println("Welcome to the chat room " + Username);
+                out.println("Paired with: " + this.pair.Username);
                 out.println("Enter your message: ");
                 String inputLine;
 
                 while ((inputLine = in.readLine()) != null) {
+                    //switch partners during the chat
                     if (inputLine.equalsIgnoreCase("switch")) {
                         this.isPaired = false;
                         if (this.pair != null) this.pair.isPaired = false;
                         this.pair = getPairSecond();
+                        out.println("Paired with: " + this.pair.Username);
+                        //handle when partner exits the chat
+                        //remove this from the clients and make the pair look for a new partner
+                        //TODO exit doesn't remove this client from the array
                     } else if (inputLine.equalsIgnoreCase("exit")) {
                         if (this.pair != null) this.pair.isPaired = false;
                         this.pair.getPairSecond();
+                        this.pair.out.println("A partnerem vele van kapcsolatben még:" + getUsername());
                         clients.remove(this);
+                        out.println(clients.size());
                     }
                     ClientHandler receiver = this.getPair();
                     if (receiver != null) {
@@ -110,9 +119,7 @@ public class server {
                             randomClient.isPaired = true;
                             return randomClient;
                         }
-                        if (this.isPaired) {
-                            out.println("Paired with: " + randomClient.Username);
-                        }
+
                         // Wait briefly before trying again
                         this.wait(3000);
                     }
@@ -121,7 +128,7 @@ public class server {
                     e.printStackTrace();
                 }
             }
-            return this.pair; // Return null if pairing was unsuccessful
+            return this.pair;
         }
 
     
